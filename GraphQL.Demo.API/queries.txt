@@ -1,0 +1,108 @@
+﻿//id 2
+
+query getstudentdetails($id: Int!) {
+  studentdetails: student(id: $id) {
+    id
+    firstName
+    lastName
+    emailAddress
+    enrollmentDate
+    enrollments {
+      id
+      grade
+      course {
+        title
+      }
+    }
+  }
+}
+
+query studentsquery{
+  students{
+    id,
+    lastName,
+    firstName,
+    enrollments{
+      course{
+        title
+      }
+    }
+  }
+}
+
+
+query coursesquery{
+  courses{
+    id,
+    title
+    credits
+    enrollments{
+      student{
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+
+//1045
+query getcoursedetails($id:Int!){
+  course(id:$id){
+    id
+    title
+    credits
+    enrollments{
+      student{
+        firstName,lastName
+      }
+    }
+  }
+}
+
+
+
+
+mutation createCourse{
+  createCourse(course:{id:2503, title:"Law",credits:3}){
+    id,
+    credits,
+    title
+  }
+}
+
+mutation createStudent{
+  createStudent(student:{
+    firstName : "Scott", 
+    lastName:"James", 
+    emailAddress:"scott@contosouniversity.com", 
+    enrollmentDate:"2017-01-27T15:19:53.000Z"
+  }){
+    id, firstName,lastName
+  }
+}
+
+
+
+
+mutation createenrollment($enrollment:EnrollmentInput!){
+  createEnrollment(enrollment: $enrollment){
+    id,
+    grade,
+    student{
+      firstName
+    }
+    course{
+      title
+    }
+  }
+}
+
+{
+  "enrollment":{
+    "studentID": 2,
+    "courseID": 2501,
+    "grade": "A"
+  }
+}
+

@@ -1,0 +1,105 @@
+﻿@page "/Courses"
+@inject IJSRuntime JSRuntime
+@inject IGraphQLClient graphQLClient
+
+<h3>Courses</h3>
+<p>Updates : @addedCourse</p>
+@if (courses != null && courses.CoursesList != null && courses.CoursesList.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Title</th>
+                <th scope="col">Credits</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in courses.CoursesList)
+            {
+                <tr>
+                    <td>@course.Id</td>
+                    <td>@course.Title</td>
+                    <td>@course.Credits</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+else
+{
+    <p>Loading courses...</p>
+}
+
+
+@code {
+    private string getAllCoursesQuery = @"query getallcourses {
+          coursesList : courses	 {
+            id
+            title
+            credits
+          }
+        }";
+
+    private string subscribeToAddedCourses = @"subscription subscribetocourses{
+      course: courseAdded{
+            title
+      }
+    }";
+
+    private CourseListData courses;
+
+    private string addedCourse = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCoursesData();
+
+        Subscribe();
+    }   
+
+    private async Task LoadCoursesData()
+    {
+        var req = new GraphQL.GraphQLRequest
+        {
+            Query = getAllCoursesQuery
+
+        };
+
+        var response = await graphQLClient.SendQueryAsync<CourseListData>(req);
+
+        courses = response.Data;
+    }
+
+    private void Subscribe()
+    {
+        var subscribeToAddedCoursesReq = new GraphQL.GraphQLRequest
+        {
+            Query = subscribeToAddedCourses
+
+        };
+
+        //create the subscription to the graphql endpoint
+        IObservable<GraphQLResponse<CourseDetailsData>> subscriptionStream
+    = graphQLClient.CreateSubscriptionStream<CourseDetailsData>(subscribeToAddedCoursesReq);
+
+
+    //watcher for the IObservable messages. 
+        var subscription = subscriptionStream.Subscribe(async response =>
+        {
+            //variable to show some messaging on the component
+            addedCourse = $"Course {response.Data.Course.Title} added";
+
+            Console.WriteLine($"Course {response.Data.Course.Title} added");
+
+            //load the data again
+            await LoadCoursesData();
+
+            //force the reload of component in Blazor explictly. 
+            StateHasChanged();
+        });
+    }
+
+}

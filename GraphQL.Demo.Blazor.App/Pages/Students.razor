@@ -1,0 +1,63 @@
+﻿@page "/Students"
+@inject IGraphQLClient graphQLClient
+
+<h3>Students</h3>
+
+@if(students != null && students.StudentsList != null && students.StudentsList.Any())
+{
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Firstname</th>
+                <th scope="col">Lastname</th>
+                  <th scope="col">Enrollment Date</th>
+                  <th scope="col">Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var student in students.StudentsList)
+            {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@student.EnrollmentDate.ToString("dd/MM/yyyy")</td>
+                     <td> <NavLink class="nav-link" href="@($"StudentDetails/{student.Id}")">
+                        <span class="oi oi-book" aria-hidden="true"></span>Details
+                    </NavLink></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+  
+
+
+@code {
+    private string getAllStudentsQuery = @"query getallstudents {
+                                          studentsList : students {
+                                            id
+                                            firstName
+                                            lastName
+                                            enrollmentDate
+                                          }
+                                        }";
+
+    private StudentsListData students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var req = new GraphQL.GraphQLRequest
+        {
+            Query = getAllStudentsQuery
+
+        };
+
+        var response = await graphQLClient.SendQueryAsync<StudentsListData>(req);
+
+        students = response.Data;
+    }
+
+}

@@ -1,0 +1,79 @@
+﻿@page "/StudentDetails/{id:int}"
+
+@inject IGraphQLClient graphQLClient;
+
+<h3>Student Details</h3>
+
+@if (studentDetailsData != null && studentDetailsData.StudentDetails != null)
+{
+
+    <p><strong>Id : </strong> @studentDetailsData.StudentDetails.Id</p>
+    <p><strong>Firstname : </strong> @studentDetailsData.StudentDetails.FirstName</p>
+    <p><strong>Lastname : </strong> @studentDetailsData.StudentDetails.LastName</p>
+    <p><strong>Email Address : </strong> @studentDetailsData.StudentDetails.EmailAddress</p>
+    <p><strong>Enrollment Date : </strong> @studentDetailsData.StudentDetails.EnrollmentDate.ToString("dd/MM/yyyy")</p>
+
+    @if (studentDetailsData.StudentDetails.Enrollments != null && studentDetailsData.StudentDetails.Enrollments.Any())
+    {
+        <h3>Enrollments</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Enrollment Id</th>
+                    <th scope="col">Grade</th>
+                    <th scope="col">Course Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enrollment in studentDetailsData.StudentDetails.Enrollments)
+                {
+                    <tr>
+                        <td>@enrollment.Id</td>
+                        <td>@enrollment.Grade</td>
+                        <td>@enrollment.Course.Title</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private string getStudentDetailsQuery = @"query getstudentdetails($id: Int!) {
+  studentdetails: student(id: $id) {
+    id
+    firstName
+    lastName
+    emailAddress
+    enrollmentDate
+    enrollments {
+      id
+      grade
+      course {
+    title
+      }
+    }
+  }
+}";
+
+    private StudentDetailsData studentDetailsData;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var req = new GraphQL.GraphQLRequest
+        {
+            Query = getStudentDetailsQuery,
+            Variables = new { id = Id }
+        };
+
+        var response = await graphQLClient.SendQueryAsync<StudentDetailsData>(req);
+
+        studentDetailsData = response.Data;
+    }
+
+}

@@ -1,0 +1,65 @@
+﻿@using GraphQL.Demo.Blazor.App.FormModels
+@inject IGraphQLClient graphQLClient
+@page "/AddCourse"
+<h3>Add Course</h3>
+
+<EditForm Model="@course" OnValidSubmit="@Add"> 
+
+    <p>
+        <InputNumber @bind-Value="course.Id" />
+    </p>
+
+    <p>
+        <InputText @bind-Value="course.Title" placeholder="Course Title" />
+    </p>
+
+    <p>
+        <InputNumber @bind-Value="course.Credits" />
+    </p>
+
+    <p>
+        <button type="submit">Add Course</button>
+    </p>
+</EditForm>
+<p>@Message</p>
+
+
+@code {
+    private AddCourseModel course = new AddCourseModel();
+
+    private CourseDetailsData courseResponse;
+
+    private string Message = string.Empty;
+
+    private const string CourseMutation = @"mutation createCourse($course:CourseInput!){
+                                             course: createCourse(course:$course){
+                                                id,
+                                                credits,
+                                                title
+                                              }
+                                            }";
+
+
+    public async Task Add()
+    {
+        
+        var req = new GraphQL.GraphQLRequest
+        {
+            Query = CourseMutation,
+            Variables = new {course = course}           
+
+        };
+
+        var response = await graphQLClient.SendMutationAsync<CourseDetailsData>(req);
+
+        courseResponse = response.Data;
+
+        if(courseResponse.Course != null)
+        {
+            Message = "Course Added";
+            course = new AddCourseModel();
+        }
+      
+    }
+
+}
