@@ -6,8 +6,9 @@ namespace GraphQL.Demo.API.Models.Messaging
 {
     public class CourseMessageService
     {
-        private readonly ISubject<CourseAddedMessage> _messageStream = new ReplaySubject<CourseAddedMessage>(1); //an observable and an observing sequence 
+        //an object which is both an observable which can be observed and an object which observes the a sequence, CourseAddedMessage
 
+        private readonly ISubject<CourseAddedMessage> _messageStream = new ReplaySubject<CourseAddedMessage>(1); 
         public CourseAddedMessage AddCourseAddedMessage(Course course)
         {
             var message = new CourseAddedMessage
@@ -15,7 +16,7 @@ namespace GraphQL.Demo.API.Models.Messaging
                 Id = course.CourseID,
                 Title = course.Title
             };
-            _messageStream.OnNext(message); //provides observer with the new data
+            _messageStream.OnNext(message); //provides observer with the new data and sends message to the subscriber
             return message;
         }
 

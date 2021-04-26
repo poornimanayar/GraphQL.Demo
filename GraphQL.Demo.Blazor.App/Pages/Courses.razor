@@ -1,5 +1,5 @@
 ﻿@page "/Courses"
-@inject IJSRuntime JSRuntime
+
 @inject IGraphQLClient graphQLClient
 
 <h3>Courses</h3>
@@ -82,11 +82,10 @@ else
         };
 
         //create the subscription to the graphql endpoint
-        IObservable<GraphQLResponse<CourseDetailsData>> subscriptionStream
-    = graphQLClient.CreateSubscriptionStream<CourseDetailsData>(subscribeToAddedCoursesReq);
+        IObservable<GraphQLResponse<CourseDetailsData>> subscriptionStream = graphQLClient.CreateSubscriptionStream<CourseDetailsData>(subscribeToAddedCoursesReq);
 
 
-    //watcher for the IObservable messages. 
+        //watcher for the IObservable messages. 
         var subscription = subscriptionStream.Subscribe(async response =>
         {
             //variable to show some messaging on the component

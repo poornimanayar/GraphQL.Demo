@@ -12,7 +12,7 @@ namespace GraphQL.Demo.API.GraphQL
         public ContosoUniversityMutation(CoursesRepository courseRepository, StudentsRepository studentsRepository, EnrollmentRepository enrollmentRepository, CourseMessageService courseMessageService)
         {
             // specify fields and resolve
-            FieldAsync<CourseType>(//return type
+            FieldAsync<CourseType>( //type of the field
                 "createCourse",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<CourseInputType>> { Name = "course" }),//arguments matched by name
@@ -35,17 +35,6 @@ namespace GraphQL.Demo.API.GraphQL
                    var student = context.GetArgument<Student>("student");
                    return await studentsRepository.CreateStudent(student);
                });
-
-            FieldAsync<EnrollmentType>(
-              "createEnrollment",
-              arguments: new QueryArguments(
-                  new QueryArgument<NonNullGraphType<EnrollmentInputType>> { Name = "enrollment" }),
-
-            resolve: async context =>
-            {
-                var enrollment = context.GetArgument<Enrollment>("enrollment");
-                return await enrollmentRepository.CreateEnrollment(enrollment);
-            });
 
             // can create update and delete fields 
         }

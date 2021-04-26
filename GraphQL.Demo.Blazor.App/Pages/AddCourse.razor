@@ -21,6 +21,7 @@
         <button type="submit">Add Course</button>
     </p>
 </EditForm>
+
 <p>@Message</p>
 
 
@@ -57,7 +58,7 @@
         if(courseResponse.Course != null)
         {
             Message = "Course Added";
-            course = new AddCourseModel();
+            course = new AddCourseModel();//reset the form
         }
       
     }
