@@ -10,7 +10,7 @@ namespace GraphQL.Demo.API.GraphQL.Types
     {
         public StudentType(IDataLoaderContextAccessor dataLoaderAccessor, EnrollmentRepository enrollmentRepository)
         {
-            
+
             Field(x => x.ID).Name("Id").Description("The ID of the student");
 
             Field(x => x.FirstMidName).Name("FirstName").Description("The firstname of the student");
@@ -19,7 +19,7 @@ namespace GraphQL.Demo.API.GraphQL.Types
 
             Field(x => x.EmailAddress).Description("The email address of the student");
 
-           Field(x => x.EnrollmentDate).Description("The enrollment date of the student");
+            Field(x => x.EnrollmentDate).Description("The enrollment date of the student");
 
             Field<ListGraphType<EnrollmentType>, IEnumerable<Enrollment>>().Name("Enrollments").Description("Enrollment details for the student")
               .ResolveAsync(context =>
@@ -29,7 +29,7 @@ namespace GraphQL.Demo.API.GraphQL.Types
 
                   var loader =
                      dataLoaderAccessor.Context.GetOrAddCollectionBatchLoader<int, Enrollment>(
-                         "GetEnrollmentsByStudent", enrollmentRepository.GetEnrollmentForStudents);
+                         "GetEnrollmentsByStudent", enrollmentRepository.GetEnrollmentForStudents); //gets or creates a new dataloaderby the name
 
                   return loader.LoadAsync(context.Source.ID); //load data for the given key
               });

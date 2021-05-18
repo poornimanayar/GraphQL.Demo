@@ -13,7 +13,7 @@ namespace GraphQL.Demo.API.GraphQL
         {
             // specify fields and resolve
             FieldAsync<CourseType>( //type of the field
-                "createCourse",
+                "createCourse", "Create a course",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<CourseInputType>> { Name = "course" }),//arguments matched by name
 

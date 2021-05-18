@@ -8,6 +8,7 @@ namespace GraphQL.Demo.API.GraphQL
     {
         public ContosoUniversitySchema(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+            //operation types
             Query = serviceProvider.GetRequiredService<ContosoUniversityQuery>();
             Mutation = serviceProvider.GetRequiredService<ContosoUniversityMutation>();
             Subscription = serviceProvider.GetRequiredService<ContosoUniversitySubscription>();

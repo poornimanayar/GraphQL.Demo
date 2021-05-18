@@ -16,7 +16,7 @@ namespace GraphQL.Demo.API.GraphQL
                 Name = "courseAdded",
                 Type = typeof(CourseAddedMessageType), //graph type for the field
                 Resolver = new FuncFieldResolver<CourseAddedMessage>(c=>c.Source as CourseAddedMessage), //delegate to resolve the Source property to the CourseAddedMessage
-                Subscriber = new EventStreamResolver<CourseAddedMessage>(c=>courseMessageService.GetMessages()) //  The subscriber gets the observable stream from the service
+                Subscriber = new EventStreamResolver<CourseAddedMessage>(c=>courseMessageService.GetMessages()) //  The subscriber subscribes to the observable stream from the service
             });
         }
     }

@@ -20,7 +20,7 @@ namespace GraphQL.Demo.API.GraphQL
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IntGraphType>> //argument matched by name
                 {
                     Name = "id",
-                    Description = "The id of the student"
+                    Description = "The id of the course"
                 }),
                 resolve: context =>
                 {

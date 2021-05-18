@@ -7,7 +7,6 @@ using GraphQL.Demo.API.Models;
 using Microsoft.EntityFrameworkCore;
 using GraphQL.Demo.API.GraphQL;
 using GraphQL.Demo.API.Repositories;
-using GraphQL.DataLoader;
 using GraphQL.Demo.API.Models.Messaging;
 
 namespace GraphQL.Demo.API
@@ -41,6 +40,7 @@ namespace GraphQL.Demo.API
             services.AddScoped<StudentsRepository>();
             services.AddScoped<CoursesRepository>();
             services.AddScoped<EnrollmentRepository>();
+
             services.AddSingleton<CourseMessageService>();
 
             //register the schema
